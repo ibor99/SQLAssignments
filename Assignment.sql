@@ -1,0 +1,50 @@
+CREATE TABLE Users (
+	Email NVARCHAR(320) PRIMARY KEY,
+	UserName NVARCHAR(255) NOT NULL,
+	Role NVARCHAR(50) NOT NULL
+	);
+
+
+CREATE TABLE Products(
+	ProductId UNIQUEIDENTIFIER PRIMARY KEY,
+	Name NVARCHAR(255) NOT NULL,
+	Category NVARCHAR(255),
+	Description NVARCHAR(MAX),
+	Price DECIMAL(18,2) NOT NULL,
+	Quantity INT NOT NULL,
+	IsAvailable BIT NOT NULL,
+	DiscountAmount DECIMAL (18,2) NOT NULL
+);
+
+CREATE TABLE Orders(
+	OrderId UNIQUEIDENTIFIER PRIMARY KEY,
+	Date DATETIME NOT NULL,
+	Total DECIMAL(18, 2) NOT NULL,
+	IsCompleted BIT NOT NULL,
+	UserEmail NVARCHAR(320),
+	FOREIGN KEY (UserEmail) REFERENCES Users(Email)
+);
+
+CREATE TABLE OrderProducts (
+	OrderId UNIQUEIDENTIFIER,
+	ProductId UNIQUEIDENTIFIER,
+	Quantity INT NOT NULL,
+	PRIMARY KEY (OrderId, ProductId),
+	FOREIGN KEY (OrderId) REFERENCES Orders(OrderId),
+	FOREIGN KEY (ProductId) REFERENCES Products(ProductId)
+);
+
+CREATE TABLE ShoppingCarts (
+	UserEmail NVARCHAR(320) PRIMARY KEY,
+	Total DECIMAL (18, 2) NOT NULL,
+	FOREIGN KEY (UserEmail) REFERENCES Users(Email)
+);
+
+CREATE TABLE ShoppingCartProducts (
+	UserEmail NVARCHAR(320),
+	ProductId UNIQUEIDENTIFIER,
+	Quantity INT NOT NULL,
+	PRIMARY KEY (UserEmail, ProductId),
+	FOREIGN KEY (UserEmail) REFERENCES ShoppingCarts(UserEmail),
+	FOREIGN KEY (ProductId) REFERENCES Products(ProductId)
+);
